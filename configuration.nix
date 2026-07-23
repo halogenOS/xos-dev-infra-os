@@ -18,8 +18,8 @@ in
     foundrixModules.config.shell.zsh.lite
     foundrixModules.config.virtualisation.docker
     foundrixModules.config.filesystem.var
-    foundrixModules.config.runtime.repart.var
     foundrixModules.services.secrets
+    foundrixModules.services.operator-secrets
     foundrixModules.services.nftables-dns
     foundrixModules.config.networking.controlled-egress-firewall
     foundrixModules.config.networking.dns-resolvers
@@ -39,6 +39,11 @@ in
     ];
   };
   users.groups.${userName}.gid = config.users.users.${userName}.uid;
+
+  # The initrd sshd is the remote channel for the /var LUKS passphrase
+  # (devices/hetzner imports filesystem.var-luks). nixpkgs would default
+  # these to root's keys, and root has none here — same operator, same key.
+  boot.initrd.network.ssh.authorizedKeys = config.users.users.${userName}.openssh.authorizedKeys.keys;
 
   home-manager.users.${userName}.home.stateVersion = "25.05";
 
@@ -123,6 +128,9 @@ in
     updateInterval = "1h";
   };
 
+  # 2223 (initrd sshd, LUKS passphrase) is deliberately absent: it only ever
+  # listens in stage 1, where this firewall does not exist yet, and nothing
+  # binds it in the main system.
   networking.firewall.allowedTCPPorts = [
     22   # Forgejo built-in SSH
     2222 # admin OpenSSH
@@ -133,6 +141,12 @@ in
     enable = true;
     allowLinkLocalMetadata = true;
   };
+
+  # The credential validator makes a real HTTPS request to the SSO host; the
+  # static "*:443" egress rule must be installed before it, or nftables
+  # coming up mid-request drops an in-flight connection and the validator
+  # reports `error`.
+  systemd.services.operator-secrets.after = [ "nftables.service" ];
 
   systemd.services.docker = {
     after = [
@@ -145,6 +159,7 @@ in
 
   foundrix.general.qemu.portForwards = [
     { host = 2022; guest = 2222; } # admin ssh
+    { host = 2023; guest = 2223; } # initrd ssh (LUKS passphrase)
     { host = 2222; guest = 22; }   # forgejo ssh
     { host = 18080; guest = 8080; }
     { host = 8443; guest = 443; }

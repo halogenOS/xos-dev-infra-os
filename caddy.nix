@@ -50,6 +50,28 @@
       config.custom.zerosslEabFile
     ];
 
+    # The EAB credentials are operator-provided at first boot, like the
+    # Forgejo OIDC ones. No validator: proving EAB credentials would take a
+    # full ACME newAccount exchange, so presence of both fields is the
+    # acceptance criterion. requiredBy gates caddy on the collector — without
+    # it, caddy start-limit-crashes on the missing EnvironmentFile.
+    foundrix.services.operator-secrets.secrets.zerossl-eab =
+      lib.mkIf (config.custom.zerosslEabFile != null)
+        {
+          description = "ZeroSSL ACME EAB credentials for Caddy";
+          fields = {
+            EAB_KID = {
+              order = 10;
+            };
+            EAB_HMAC_KEY = {
+              order = 20;
+              sensitive = true;
+            };
+          };
+          path = toString config.custom.zerosslEabFile;
+          requiredBy = [ "caddy.service" ];
+        };
+
     networking.firewall.allowedTCPPorts = [
       80
       443
