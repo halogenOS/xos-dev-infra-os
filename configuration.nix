@@ -26,6 +26,7 @@ in
     ./home.nix
     ./caddy.nix
     ./forgejo.nix
+    ./branding
   ];
 
   users.users.${userName} = {

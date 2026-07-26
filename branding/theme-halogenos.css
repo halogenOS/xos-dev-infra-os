@@ -1,0 +1,117 @@
+/*
+ * halogenOS theme for Forgejo.
+ *
+ * Loaded by Forgejo as /assets/css/theme-halogenos.css because the theme is
+ * named "halogenos" (see branding/default.nix); the template resolves a theme
+ * to theme-<name>.css, so the filename IS the contract.
+ *
+ * Rather than copy upstream's ~200-line theme and inherit the job of tracking
+ * its variable churn, this imports the stock auto theme and overrides only the
+ * brand surface on top. @import is hoisted, so every rule below wins on
+ * cascade order at equal (:root) specificity, in both colour schemes —
+ * theme-forgejo-auto.css is itself just:
+ *
+ *     @import "theme-forgejo-light.css";
+ *     @import "theme-forgejo-dark.css" (prefers-color-scheme: dark);
+ *
+ * Only the anchors are declared per scheme; the ramp is expressed once, in
+ * terms of them, because custom properties re-resolve their var() references
+ * against whichever declaration wins for the element. Note that upstream's
+ * naming is relative to the scheme, not absolute: in the light theme
+ * "dark-N" steps get darker and "light-N" lighter, and in the dark theme it
+ * inverts. --hx-emph / --hx-deemph carry that flip.
+ */
+
+@import url("theme-forgejo-auto.css");
+
+:root {
+  /* The one place the brand colour is written down. */
+  --hx-brand: #00b4e7;
+
+  /* Light scheme is the default; the dark block below flips these. */
+  --hx-emph: #000000;
+  --hx-deemph: #ffffff;
+  --hx-bg: #dafdff;
+
+  /*
+   * #00b4e7 is 2.4:1 on white — below the 4.5:1 minimum for text, and links
+   * and button labels are text. So the light scheme darkens the brand for its
+   * primary, exactly as upstream's light theme uses a deep #c2410c against
+   * the bright #fb923c of its dark theme. The brand colour itself still shows
+   * up light-scheme-side, as the page tint and in the logo.
+   *
+   * 28% resolves to #007394: 5.4:1 on the white card background and 5.0:1 on
+   * the tinted body. Both matter, and the body is the tighter of the two —
+   * anything under ~26% starts failing there while still looking fine on
+   * white, so check against #dafdff before brightening this.
+   */
+  --color-primary: color-mix(in oklab, var(--hx-brand), black 28%);
+  --color-primary-contrast: #ffffff;
+
+  /* Ramp — shared by both schemes, following upstream's step sizes. */
+  --color-primary-dark-1: color-mix(in oklab, var(--color-primary), var(--hx-emph) 8%);
+  --color-primary-dark-2: color-mix(in oklab, var(--color-primary), var(--hx-emph) 18%);
+  --color-primary-dark-3: color-mix(in oklab, var(--color-primary), var(--hx-emph) 18%);
+  --color-primary-dark-4: color-mix(in oklab, var(--color-primary), var(--hx-emph) 30%);
+  --color-primary-light-1: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 16%);
+  --color-primary-light-2: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 30%);
+  --color-primary-light-3: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 44%);
+  --color-primary-light-4: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 58%);
+  --color-primary-light-5: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 72%);
+  --color-primary-light-6: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 86%);
+  --color-primary-light-7: color-mix(in oklab, var(--color-primary), var(--hx-deemph) 94%);
+
+  /*
+   * Darker in both schemes (upstream aliases these to whichever ramp entry
+   * happens to be darker there), so they need no anchor.
+   */
+  --color-primary-hover: color-mix(in oklab, var(--color-primary), black 14%);
+  --color-primary-active: color-mix(in oklab, var(--color-primary), black 26%);
+
+  --color-primary-alpha-10: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-primary-alpha-20: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --color-primary-alpha-30: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  --color-primary-alpha-40: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-primary-alpha-50: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  --color-primary-alpha-60: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-primary-alpha-70: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  --color-primary-alpha-80: color-mix(in srgb, var(--color-primary) 80%, transparent);
+  --color-primary-alpha-90: color-mix(in srgb, var(--color-primary) 90%, transparent);
+
+  /*
+   * --color-accent, --color-small-accent and --color-highlight-* are defined
+   * upstream in terms of the ramp above, so they follow on their own and are
+   * deliberately not restated here.
+   *
+   * Surfaces: page background from core-infra's Zitadel branding, so the two
+   * halves of the login flow match. Cards stay near-white for legibility and
+   * to keep the tint from flattening the page; chrome sits between the two.
+   */
+  --color-body: var(--hx-bg);
+  --color-box-body: #ffffff;
+  --color-nav-bg: color-mix(in oklab, var(--hx-bg), white 40%);
+  --color-header-wrapper: color-mix(in oklab, var(--hx-bg), white 55%);
+  --color-footer: color-mix(in oklab, var(--hx-bg), white 40%);
+  --color-secondary-bg: color-mix(in oklab, var(--hx-bg), white 20%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hx-emph: #ffffff;
+    --hx-deemph: #000000;
+    --hx-bg: #001220;
+
+    /* On a near-black navy the brand colour is used as-is. */
+    --color-primary: var(--hx-brand);
+    --color-primary-contrast: #000000;
+
+    /* Lifted off the page background rather than upstream's neutral greys,
+       which would read as grey cards floating on navy. */
+    --color-body: var(--hx-bg);
+    --color-box-body: color-mix(in oklab, var(--hx-bg), white 6%);
+    --color-nav-bg: color-mix(in oklab, var(--hx-bg), white 4%);
+    --color-header-wrapper: color-mix(in oklab, var(--hx-bg), white 4%);
+    --color-footer: color-mix(in oklab, var(--hx-bg), white 4%);
+    --color-secondary-bg: color-mix(in oklab, var(--hx-bg), white 9%);
+  }
+}

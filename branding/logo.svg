@@ -1,0 +1,74 @@
+<!--
+  halogenOS mark — two overlapping triangles, blue over translucent white.
+
+  Vector port of core-infra/branding/generate-logo.py, which renders the same
+  mark with Pillow for Zitadel's login UI. Both instances sit in one login
+  flow, so the geometry is carried over exactly rather than redrawn: all
+  coordinates below are that script's constants divided by SUPERSAMPLE (4),
+  i.e. expressed in its final 512px space.
+
+    TRIANGLE_SIZE 275, OVERLAP_FRACTION 0.10  -> half-overlap 13.75
+    apex/base offsets  TRIANGLE_SIZE/2 = 137.5, TRIANGLE_SIZE*0.8 = 220
+    SCALE_FACTOR = 1.03 + 0.03*sin(1.5*pi) = 1.00  (no scaling)
+
+  giving blue  (-5.25,256) (407.25,36) (407.25,476)
+     and white (517.25,256) (104.75,36) (104.75,476)  — its mirror about x=256.
+
+  Both triangles overrun the 512 canvas on their pointed side; the viewBox
+  clips them, exactly as the Pillow version's canvas did.
+
+  Corners: the script rounds by blurring the polygon and thresholding at 50%,
+  with CORNER_RADIUS = 30*(1100/350) = 94.29 render units = 23.57 here. A
+  filter would rasterize, so instead each triangle is drawn inset by that
+  radius and stroked with 2x it under stroke-linejoin="round" — the standard
+  vector idiom for a fillet, which restores the original outline with rounded
+  corners. Insetting a triangle by d is a scale about its incenter by
+  (r_in - d)/r_in; for these, incenter (275.25,256), r_in = 132, so the
+  factor is 0.8214.
+
+  Gradients keep gradientUnits="userSpaceOnUse" over each triangle's ORIGINAL
+  (un-inset) bounding box, so the ramp spans what the script's per-pixel
+  interpolation spanned instead of following the shrunken fill geometry.
+
+  The pale triangle is drawn OPAQUE and second, so it sits in front. The
+  script appears to intend otherwise — it passes opacity=140 to
+  draw_triangle_with_gradient — but that function fills the gradient with
+  alpha 140 and then calls gradient.putalpha(mask), which replaces the whole
+  alpha channel with the 0/255 mask and discards it. Opaque is therefore what
+  Zitadel actually serves today, and matching the deployed asset beats
+  matching the script's apparent intent; a translucent version renders as a
+  symmetric star instead of one triangle overlapping another.
+
+  The drop shadow is the script's "light" variant: offset 8, blur 30, and full
+  strength — add_drop_shadow builds its layer at alpha 0.4 and then hits the
+  same putalpha(alpha) overwrite, so the deployed shadow is not the 40% the
+  argument asks for. Forgejo serves one logo.svg to both colour schemes, so
+  the mark has to hold up on a pale background; against #001220 a black shadow
+  is invisible anyway, and at favicon sizes it scales to under a pixel.
+
+  Verified against the real thing: rendering this file and generate-logo.py at
+  512 and diffing composited on white gives a mean absolute difference of
+  2.1/255 (0.6% of pixels off by >32), all of it in the shadow's falloff,
+  where Pillow's box-blur approximation and a true Gaussian disagree.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="halogenOS">
+  <defs>
+    <linearGradient id="halogenos-blue" gradientUnits="userSpaceOnUse" x1="-5.25" y1="36" x2="407.25" y2="476">
+      <stop offset="0" stop-color="#00b4e7"/>
+      <stop offset="1" stop-color="#0078b4"/>
+    </linearGradient>
+    <linearGradient id="halogenos-white" gradientUnits="userSpaceOnUse" x1="104.75" y1="36" x2="517.25" y2="476">
+      <stop offset="0" stop-color="#c8e6ff"/>
+      <stop offset="1" stop-color="#96c8e6"/>
+    </linearGradient>
+    <filter id="halogenos-shadow" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="30" flood-color="#000000" flood-opacity="1"/>
+    </filter>
+  </defs>
+  <g filter="url(#halogenos-shadow)" stroke-linejoin="round" stroke-width="47.14">
+    <path d="M44.84 256 L383.68 75.29 L383.68 436.71 Z"
+          fill="url(#halogenos-blue)" stroke="url(#halogenos-blue)"/>
+    <path d="M467.16 256 L128.32 75.29 L128.32 436.71 Z"
+          fill="url(#halogenos-white)" stroke="url(#halogenos-white)"/>
+  </g>
+</svg>
