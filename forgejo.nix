@@ -24,6 +24,17 @@ let
   oidcValidator = pkgs.callPackage (foundrix + "/packages/oidc-credential-validator") { };
   appIni = "${cfg.stateDir}/custom/conf/app.ini";
 
+  # This is the sign-in button's label AND a path segment of the OAuth callback
+  # URL: Forgejo routes /user/oauth2/{name}/callback and its
+  # AuthSourceProvider.DisplayName() returns the same source name, with no
+  # separate display-name field anywhere (there is no such flag on
+  # `admin auth add-oauth`). So changing it changes the redirect URI, which
+  # core-infra's Zitadel registers verbatim — the two must be edited together,
+  # and core-infra has to be converged before this host is switched, or Zitadel
+  # rejects the callback. Kept free of whitespace and URL-reserved characters
+  # for that reason.
+  authSourceName = "SSO";
+
   # Idempotent Zitadel OIDC auth source setup.
   # Runs as forgejo user inside forgejo.service's preStart, so the HTTP
   # server literally cannot start before this has succeeded.
@@ -41,10 +52,26 @@ let
 
       "''${forgejo_cmd[@]}" migrate
 
-      existing_id=$(
+      # Keyed on the TYPE column rather than the name, because the name is a
+      # display concern that can change (it did: zitadel -> SSO). A name-keyed
+      # lookup answers "not found" after a rename and then ADDS a second
+      # source, which shows up as two sign-in buttons, one of them pointing at
+      # a callback Zitadel has never heard of. This module declares exactly one
+      # OAuth2 source, so the type is the stable key and update-oauth renames
+      # in place. Column 3 is the type in `admin auth list`'s space-padded
+      # output; safe to index because the names set here carry no whitespace.
+      mapfile -t oauth_ids < <(
         "''${forgejo_cmd[@]}" admin auth list \
-          | awk 'NR>1 && $2 == "zitadel" { print $1; exit }'
+          | awk 'NR>1 && $3 == "OAuth2" { print $1 }'
       )
+
+      if [ "''${#oauth_ids[@]}" -gt 1 ]; then
+        echo "refusing to converge: several OAuth2 auth sources exist (ids: ''${oauth_ids[*]})" >&2
+        echo "this module owns exactly one; remove the strays before retrying" >&2
+        exit 1
+      fi
+
+      existing_id="''${oauth_ids[0]:-}"
 
       # KNOWN EXPOSURE: `--secret` is the only channel forgejo's CLI
       # offers for the client secret (verified against forgejo-lts 15.0.3
@@ -54,7 +81,7 @@ let
       # here keeps it off argv; this last hop cannot, short of a change in
       # Forgejo. See docs/operator-secrets.md "Known exception".
       args=(
-        --name zitadel
+        --name ${authSourceName}
         --provider openidConnect
         --key "$CLIENT_ID"
         --secret "$CLIENT_SECRET"
@@ -62,6 +89,10 @@ let
         --scopes "openid profile email"
         --group-claim-name roles
         --admin-group admin
+        # Replaces the generic OIDC glyph on the button with our own mark.
+        # Served by the branding module out of custom/public, and relative so
+        # it survives the git-staging -> git domain flip untouched.
+        --icon-url /assets/img/logo.svg
       )
 
       if [ -n "$existing_id" ]; then
@@ -132,12 +163,32 @@ in
           ALLOW_ONLY_EXTERNAL_REGISTRATION = true;
           REQUIRE_SIGNIN_VIEW = false;
           ENABLE_NOTIFY_MAIL = false;
+          # Zitadel is the only identity source: no local passwords exist,
+          # so the username/password form is dead weight on the sign-in
+          # page. This leaves just the "Sign in with zitadel" button.
+          # ENABLE_BASIC_AUTHENTICATION stays untouched — git-over-https
+          # token auth must keep working.
+          ENABLE_PASSWORD_SIGNIN_FORM = false;
+          ENABLE_INTERNAL_SIGNIN = false;
         };
 
         oauth2_client = {
           ENABLE_AUTO_REGISTRATION = true;
           ACCOUNT_LINKING = "auto";
-          USERNAME = "preferred_username";
+          # Derive the Forgejo username from the local part of the email
+          # rather than from preferred_username. Zitadel hands over its
+          # loginname verbatim, and ours are email addresses
+          # (admin@halogenos.org) — but Forgejo only permits alphanumerics,
+          # dash, underscore and dot, so auto-registration died with
+          # "CreateUser: name is invalid". This mode splits at the "@", which
+          # fixes it for every user at once instead of requiring each Zitadel
+          # account to be renamed.
+          #
+          # Safe because the username is cosmetic after creation: Forgejo
+          # links accounts by auth source + OIDC subject, not by name. The one
+          # exposure is a collision if two local parts ever match, which a
+          # single org on one domain cannot produce.
+          USERNAME = "email";
           UPDATE_AVATAR = true;
         };
 
@@ -181,8 +232,16 @@ in
 
     systemd.services.forgejo = {
       serviceConfig = {
+        # The built-in SSH server binds 0.0.0.0:22 as the forgejo user, which
+        # needs CAP_NET_BIND_SERVICE — and needs it in the INIT user
+        # namespace: upstream's hardening sets PrivateUsers=true, and inside
+        # that private namespace the ambient capability cannot bind host
+        # ports (bind: permission denied, service crash-loop). mkForce on
+        # the bounding set because upstream's "" is a RESET marker in
+        # systemd's list merging, so plain merging would be order-dependent.
         AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
-        CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+        CapabilityBoundingSet = lib.mkForce [ "CAP_NET_BIND_SERVICE" ];
+        PrivateUsers = lib.mkForce false;
         EnvironmentFile = [ (toString config.custom.forgejoOidcEnvFile) ];
       };
 
