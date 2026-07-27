@@ -1,0 +1,115 @@
+:root {
+  color-scheme: light dark;
+  --brand: #00b4e7;
+  --fg: #1b2733;
+  --muted: #5b6b7a;
+  --bg: #dafdff;
+  --card: #ffffff;
+  --rule: #bfe3ee;
+  --link: #007394;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6edf3;
+    --muted: #9bb0c0;
+    --bg: #001220;
+    --card: #04202f;
+    --rule: #103246;
+    --link: #4cc9f0;
+  }
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 4rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* The column is set once, on the container. Centring each child instead
+   fails the moment a child sets `margin` shorthand, which resets the auto
+   side margins and pins that element to the left. */
+main {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+h1 {
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid var(--brand);
+  font-size: 1.9rem;
+  line-height: 1.2;
+}
+
+h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+h3 {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+/* :visited stated explicitly: a bare `a { color }` loses on specificity to
+   any `a:visited` rule a browser or stylesheet may set. */
+a,
+a:link,
+a:visited {
+  color: var(--link);
+}
+
+a:hover,
+a:focus {
+  color: var(--brand);
+}
+
+code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--brand), transparent 88%);
+  font-size: 0.9em;
+}
+
+table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  background: var(--card);
+}
+
+th,
+td {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: color-mix(in oklab, var(--brand), transparent 85%);
+}
+
+/* Wide content scrolls inside itself rather than the page. */
+table,
+pre {
+  display: block;
+  overflow-x: auto;
+}
+
+footer {
+  max-width: 46rem;
+  margin: 3rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.9rem;
+}

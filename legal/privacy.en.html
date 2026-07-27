@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — @gitDomain@</title>
+  <link rel="stylesheet" href="/legal.css">
+  <link rel="icon" href="/assets/img/favicon.svg">
+</head>
+<body>
+<main>
+<h1 id="privacy-policy">Privacy Policy</h1>
+<p>This policy explains how personal data is processed when you use the
+Git hosting service at <code>@gitDomain@</code>. It is provided pursuant
+to Articles 13 and 14 GDPR.</p>
+<p><a href="/datenschutz">Diese Seite auf Deutsch</a></p>
+<h2 id="controller">Controller</h2>
+<p>@operatorName@<br />
+@operatorCareOf@<br />
+@operatorStreet@<br />
+@operatorCity@<br />
+@operatorCountryEn@</p>
+<p>Data protection enquiries: <a
+href="mailto:@emailPrivacy@">@emailPrivacy@</a></p>
+<p>A data protection officer has not been appointed, as the statutory
+thresholds of § 38 BDSG are not met.</p>
+<h2 id="what-we-process-why-and-on-what-basis">What we process, why, and
+on what basis</h2>
+<h3 id="account-data">Account data</h3>
+<p>Accounts on this service are not created here. Authentication is
+delegated to the halogenOS single sign-on at <code>@ssoDomain@</code>,
+operated by the same controller under its own <a
+href="https://@ssoDomain@/privacy-policy">privacy policy</a>. When you
+sign in for the first time, an account is created from the data that
+sign-on transmits: your username, your email address, your display name,
+and — where set — your avatar and role assignments.</p>
+<p><em>Purpose:</em> providing you with an account and access to the
+service.<br />
+<em>Legal basis:</em> Article 6(1)(b) GDPR (performance of a contract or
+steps prior to it).</p>
+<h3 id="repository-content">Repository content</h3>
+<p>Anything you push, upload or enter — repository contents, commits,
+branches, tags, comments and the metadata that accompanies them — is
+stored so the service can perform its function. <strong>Repositories on
+this instance are public and readable by anyone, without an
+account.</strong></p>
+<p>Note that Git commits permanently embed the author name and email
+address that <em>you</em> configured in your Git client. This data
+becomes part of the repository history, is copied by everyone who clones
+it, and cannot be altered afterwards without rewriting that history.
+Choose those values deliberately; <code>git config user.email</code>
+accepts any address you are willing to publish.</p>
+<p><em>Purpose:</em> providing the hosting service.<br />
+<em>Legal basis:</em> Article 6(1)(b) GDPR.</p>
+<h3 id="personal-data-inside-repositories-we-republish">Personal data
+inside repositories we republish</h3>
+<p>Repositories here include forks and mirrors of other open-source
+projects. Their history carries commit metadata — names and email
+addresses — belonging to contributors who have never had any
+relationship with this service. That is personal data obtained from
+somewhere other than the data subject, which makes this service a
+controller for it and brings Article 14 GDPR into play.</p>
+<p><em>Categories of data:</em> author and committer name, email address,
+and where present the username — exactly as each contributor recorded
+them in their own commits.<br />
+<em>Source:</em> the public upstream repositories the fork or mirror
+was taken from.<br />
+<em>Recipients:</em> anyone who views, clones or mirrors the repository.
+Authorship records travel with the code because they are what the
+licence requires in order to redistribute it lawfully: a recipient needs
+them in order to comply with its attribution terms.<br />
+<em>Retention:</em> for as long as the repository remains published.
+Commit history is immutable by design and is not pruned.<br />
+<em>Purpose:</em> distributing derived open-source software with its
+history and attribution intact. Git identifies every commit by a hash
+computed over that metadata, so it cannot be stripped without rewriting
+the history and invalidating every existing clone, and the licences
+these projects use generally require attribution to be preserved.<br />
+<em>Legal basis:</em> Article 6(1)(f) GDPR. In the balancing exercise:
+the contributors published this data themselves, in a public repository,
+under a licence that expressly anticipates redistribution; it is limited
+to what they chose to place in their own commits; and preserving it is
+what both the licence and the tooling require.</p>
+<p>Article 14(1) would ordinarily require each of those contributors to
+be notified individually. For repositories with thousands of
+contributors that is a disproportionate effort within the meaning of
+Article 14(5)(b), which is why this notice is published instead — that
+is precisely the alternative the provision prescribes.</p>
+<p>If you are one of those contributors and wish to exercise your rights
+under Articles 15 to 21, write to <a
+href="mailto:@emailPrivacy@">@emailPrivacy@</a>. Every request is
+answered by a person; no decision here is automated.</p>
+<p>We would rather state the limit plainly than imply more than we can
+deliver. A repository can be removed from this service, and we will do
+that where the balance favours it. What we cannot do is alter or delete
+data inside an existing development history: Git identifies every commit
+by a hash computed over the author and committer fields, so changing
+them rewrites every subsequent commit, invalidates every signature and
+breaks every clone, tag and reference derived from them. Nor would it
+achieve much — the same commits exist in the upstream project and in
+every other copy that has ever been cloned, and none of those are within
+this service’s control. This is a property of the version control system
+itself rather than a policy choice, and the same limit applies to every
+Git host and archive.</p>
+<h3 id="ssh-keys-and-access-tokens">SSH keys and access tokens</h3>
+<p>Public SSH keys and API access tokens you register are stored so that
+Git operations and API requests can be authenticated to your
+account.</p>
+<p>Neither is required in order to use the service — the web interface
+works without them — and deleting a key or token ends this processing
+immediately.</p>
+<p><em>Purpose:</em> providing the optional access method you chose to
+enable.<br />
+<em>Legal basis:</em> Article 6(1)(b) GDPR, assessed for this feature on
+its own: storing the key is necessary to provide the SSH or API access
+you asked for by adding it, rather than necessary for the service as a
+whole.</p>
+<h3 id="server-logs">Server logs</h3>
+<p>The web server and the application record technical data about
+requests: IP address, timestamp, requested path, HTTP status, referrer
+and user agent. These logs are used to operate the service, to diagnose
+faults, and to detect and defend against attacks and abuse. They are
+held on the server, rotated automatically, and are not used to profile
+users or combined with account data for any other purpose.</p>
+<p><em>Purpose:</em> operation, security and troubleshooting.<br />
+<em>Legal basis:</em> Article 6(1)(f) GDPR (legitimate interest in a
+functioning, secure service).</p>
+<h3 id="cookies">Cookies</h3>
+<p>This service sets only cookies that are strictly necessary for it to
+work: a session cookie that keeps you signed in, a CSRF token that
+protects forms against cross-site request forgery, and a cookie
+recording your interface language. No analytics, advertising, tracking
+or profiling cookies are set, and no consent banner is required because
+§ 25(2) TDDDG exempts strictly necessary storage.</p>
+<p><em>Legal basis:</em> § 25(2) TDDDG in conjunction with Article
+6(1)(b)/(f) GDPR.</p>
+<h2 id="what-we-do-not-do">What we do not do</h2>
+<p>No advertising is displayed. No web analytics, tracking pixels,
+social media widgets, fonts or scripts are loaded from third parties —
+every asset is served from this domain. No personal data is sold, rented
+or transferred for marketing purposes. No automated decision-making or
+profiling within the meaning of Article 22 GDPR takes place.
+Notification emails are not sent by this service.</p>
+<h2 id="recipients-and-processors">Recipients and processors</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Recipient</th>
+<th>Role</th>
+<th>Basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@hostingProvider@</td>
+<td>Server hosting in @hostingLocation@</td>
+<td>Processor, Article 28 GDPR</td>
+</tr>
+<tr>
+<td>The public</td>
+<td>Repository content, which is published by design</td>
+<td>Your own act of publication</td>
+</tr>
+</tbody>
+</table>
+<p>No data is transferred to a third country outside the EU/EEA. The
+servers and all stored data are located in @dataLocation@.</p>
+<h2 id="retention">Retention</h2>
+<p>Repository content and account data are retained until you delete
+them or ask for the account to be deleted. Server logs are retained only
+as long as needed for operation and security and are rotated
+automatically. Data that must be kept under statutory retention
+obligations is retained accordingly and otherwise restricted from
+processing.</p>
+<h2 id="your-rights">Your rights</h2>
+<p>Under the GDPR you have the right to obtain confirmation as to
+whether your data is processed and to access it (Article 15), to
+rectification (Article 16), to erasure (Article 17), to restriction of
+processing (Article 18), to data portability (Article 20), and to object
+to processing based on legitimate interests (Article 21). Where
+processing rests on consent, you may withdraw it at any time with effect
+for the future.</p>
+<p>To exercise any of these, write to <a
+href="mailto:@emailPrivacy@">@emailPrivacy@</a>.</p>
+<p>One practical limit deserves stating plainly: content you have
+published into a public Git repository — including author names and
+email addresses inside commits — may already have been cloned by others.
+Deleting it here cannot reach those copies, and rewriting published
+history is not always possible.</p>
+<h2 id="right-to-lodge-a-complaint">Right to lodge a complaint</h2>
+<p>You may lodge a complaint with a supervisory authority, in particular
+in the Member State of your habitual residence, place of work, or the
+place of the alleged infringement. The authority competent for this
+controller is:</p>
+<p>@authorityName@<br />
+@authorityAddress@<br />
+<a href="@authorityWebsite@">@authorityWebsite@</a></p>
+<h2 id="changes">Changes</h2>
+<p>This policy may be updated as the service changes. The current
+version is always available at this address.</p>
+<p>Last updated: @lastUpdatedEn@</p>
+</main>
+</body>
+</html>
