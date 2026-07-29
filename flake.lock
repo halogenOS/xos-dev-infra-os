@@ -19,11 +19,11 @@
         "rev": "e78c58416bd51094b7c1e596bd86ecb79c763a9f",
         "revCount": 359,
         "type": "git",
-        "url": "file:///home/simao/workspace/foundrix"
+        "url": "https://codeberg.org/xdevs23/foundrix"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/simao/workspace/foundrix"
+        "url": "https://codeberg.org/xdevs23/foundrix"
       }
     },
     "home-manager": {
