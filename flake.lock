@@ -13,11 +13,11 @@
         "nixpkgs-unstable": "nixpkgs-unstable"
       },
       "locked": {
-        "lastModified": 1785969474,
-        "narHash": "sha256-pq6jmbFnAvJuO1xXp3BITjgBTe5kXXTiC7JQn7TEE9o=",
+        "lastModified": 1786278916,
+        "narHash": "sha256-ov3TnewEQOHq+JQq4FN9RTiTMOePbrRbwWdCjxSchHE=",
         "ref": "refs/heads/main",
-        "rev": "2c779a411cbe34adc2f851958ab4e0a93053d1e7",
-        "revCount": 375,
+        "rev": "7b6210a108896387ee2d2aa21ff0fbac41fa4a35",
+        "revCount": 379,
         "type": "git",
         "url": "https://codeberg.org/xdevs23/foundrix"
       },

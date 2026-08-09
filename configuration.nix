@@ -23,6 +23,8 @@ in
     foundrixModules.services.nftables-dns
     foundrixModules.config.networking.controlled-egress-firewall
     foundrixModules.config.networking.dns-resolvers
+    foundrixModules.services.backup.smb
+    foundrixModules.services.backup.postgres
     ./home.nix
     ./caddy.nix
     ./forgejo.nix
@@ -90,6 +92,15 @@ in
 
   # ZeroSSL EAB credentials for Caddy
   custom.zerosslEabFile = "/var/credentials/zerossl-eab.env";
+
+  # Nightly /var backup: btrfs snapshots replicated to an SMB share holding a
+  # loop-mounted btrfs image. Which server and share is an operator fact,
+  # collected by operator-secrets — on an already-running host, at the first
+  # switch after enabling this. A logical dump of the Forgejo database rides
+  # inside each snapshot, because a copied Postgres data directory alone is
+  # not a restorable database.
+  foundrix.services.backup.smb.enable = true;
+  foundrix.services.backup.postgres.databases = [ "forgejo" ];
 
   # Dynamic DNS resolution for nftables
   foundrix.services.nftables-dns = {
