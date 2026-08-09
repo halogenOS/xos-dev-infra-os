@@ -131,6 +131,21 @@ in
   };
 
   config = {
+    # Anubis sits between Caddy and Forgejo: browser-like user agents solve
+    # a proof-of-work challenge before reaching the forge, which is what
+    # keeps AI scrapers from crawling every commit of every repository.
+    # Default policy — git and API clients pass through unchallenged. Open
+    # Graph passthrough keeps link previews working without exempting each
+    # messenger's scraper individually.
+    services.anubis.instances.forgejo.settings = {
+      TARGET = "http://127.0.0.1:${toString config.services.forgejo.settings.server.HTTP_PORT}";
+      OG_PASSTHROUGH = true;
+      OG_EXPIRY_TIME = "24h";
+    };
+
+    # Caddy reaches the instance over its unix socket.
+    users.users.caddy.extraGroups = [ config.users.groups.anubis.name ];
+
     services.forgejo = {
       enable = true;
 

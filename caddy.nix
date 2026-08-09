@@ -46,8 +46,10 @@
       };
 
       virtualHosts."${config.custom.gitDomain}" = {
+        # Through Anubis, not straight to Forgejo — the challenge gate is
+        # only worth anything if there is no path around it.
         extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString config.services.forgejo.settings.server.HTTP_PORT}
+          reverse_proxy unix/${config.services.anubis.instances.forgejo.settings.BIND}
         '';
       };
     };
