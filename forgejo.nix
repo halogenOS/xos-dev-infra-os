@@ -176,7 +176,14 @@ in
           LANDING_PAGE = "explore";
         };
 
-        session.COOKIE_SECURE = true;
+        session = {
+          COOKIE_SECURE = true;
+          # The default provider is memory: every service restart — so every
+          # deployment — signed everyone out. Sessions in the database
+          # survive restarts and are carried by the backup with everything
+          # else.
+          PROVIDER = "db";
+        };
 
         service = {
           DISABLE_REGISTRATION = true;
