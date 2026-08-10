@@ -168,6 +168,11 @@ in
           SSH_PORT = 22;
           START_SSH_SERVER = true;
           SSH_LISTEN_HOST = "0.0.0.0";
+          # The conventional git@ in clone URLs, decoupled from the unix
+          # user the service runs as (which stays `forgejo`, along with all
+          # state ownership). The built-in SSH server both displays and
+          # accepts this name.
+          BUILTIN_SSH_SERVER_USER = "git";
           LANDING_PAGE = "explore";
         };
 
