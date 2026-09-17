@@ -28,6 +28,7 @@ in
     ./home.nix
     ./caddy.nix
     ./forgejo.nix
+    ./website.nix
     ./branding
     ./legal
   ];

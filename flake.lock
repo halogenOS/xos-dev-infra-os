@@ -148,7 +148,28 @@
         "foundrix": "foundrix",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "website": "website"
+      }
+    },
+    "website": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789679994,
+        "narHash": "sha256-OGE+9rW5LXZSZYccHrUrWSOzSOR1dsB53EhRttfCTaQ=",
+        "owner": "halogenOS",
+        "repo": "website-2026",
+        "rev": "45a453b8e3e97119a0155feaff609b6d7a79b496",
+        "type": "github"
+      },
+      "original": {
+        "owner": "halogenOS",
+        "repo": "website-2026",
+        "type": "github"
       }
     }
   },

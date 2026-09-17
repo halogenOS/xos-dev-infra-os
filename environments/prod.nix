@@ -7,4 +7,8 @@
   # git-staging.halogenos.org first; that name is retired.
   custom.gitDomain = "git.halogenos.org";
   custom.ssoDomain = "sso.halogenos.org";
+
+  # The public site. Only prod serves it; int leaves custom.webDomain null, so
+  # the service and its vhosts do not exist there.
+  custom.webDomain = "halogenos.org";
 }
